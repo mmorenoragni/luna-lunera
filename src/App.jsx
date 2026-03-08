@@ -22,7 +22,7 @@ function PageFallback() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Layout />}>
