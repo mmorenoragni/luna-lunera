@@ -1,0 +1,60 @@
+:root {
+  /* Paleta inspirada en la imagen Luna Lunera: pasteles, rosa, lavanda, azul cielo, coral */
+  --color-primary: #c45c6e;
+  --color-primary-hover: #a84d5c;
+  --color-secondary: #5b8dc9;
+  --color-secondary-hover: #4a7ab8;
+  --color-text: #2d2d4a;
+  --color-text-muted: #5c5c7a;
+  --color-border: #ddd6e5;
+  --color-bg: #f5f0f8;
+  --color-bg-muted: #ebe5f2;
+  --color-surface: #fefefe;
+  --color-success: #5a9b6e;
+  --color-error: #c45c6e;
+  --color-footer-bg: #2d2d4a;
+  --color-footer-text: #e0dce8;
+  --color-pastel-pink: #f8e8ec;
+  --color-pastel-lavender: #e8e4f0;
+  --color-pastel-blue: #e3eef9;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(45, 45, 74, 0.06);
+  --shadow-md: 0 2px 8px rgba(45, 45, 74, 0.08);
+  --shadow-lg: 0 8px 24px rgba(45, 45, 74, 0.1);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
+  color: var(--color-text);
+  background: var(--color-bg);
+  /* Fondo: imagen Luna Lunera */
+  background-image: url('/luna-lunera-fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Texto principal y títulos usan la paleta del CSS */
+h1, h2, h3, h4, h5, h6,
+p, span, li, label {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* Fallback mientras se carga una ruta (lazy) en la SPA */
+.app-loading {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}

@@ -1,0 +1,20 @@
+.shipping-page h1 {
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem;
+}
+
+.shipping-page__content h2 {
+  font-size: 1.1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.shipping-page__content ul {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.shipping-page__content p {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.5;
+}

@@ -1,0 +1,16 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout__main {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 1.5rem 1.5rem 2rem;
+  background: rgba(140, 140, 150, 0.12);
+  box-shadow: 0 0 0 1px rgba(120, 120, 130, 0.15);
+  backdrop-filter: blur(8px);
+}

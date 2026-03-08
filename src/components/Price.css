@@ -1,0 +1,15 @@
+.price-previous {
+  display: none;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+  margin-right: 0.5rem;
+  font-size: 0.9em;
+}
+
+.price-current {
+  font-weight: 600;
+  color: var(--color-primary);
+}
