@@ -181,7 +181,7 @@ jobs:
         env:
           IMAGE: ${{ env.IMAGE }}
         run: |
-          PARAMS=$(printf '{"commands":["set -e","docker pull %s","docker stop luna-lunera 2>/dev/null || true","docker rm luna-lunera 2>/dev/null || true","docker run -d --name luna-lunera --restart unless-stopped -p 80:80 %s"]}' "$IMAGE" "$IMAGE")
+          PARAMS=$(printf '{"commands":["set -e","docker pull %s","docker stop luna-lunera 2>/dev/null || true","docker rm luna-lunera 2>/dev/null || true","for c in \$(docker ps -q); do docker port \$c 2>/dev/null | grep -q '\''0.0.0.0:80'\'' && docker stop \$c && docker rm -f \$c; done || true","docker run -d --name luna-lunera --restart unless-stopped -p 80:80 %s"]}' "$IMAGE" "$IMAGE")
           set +e
           COMMAND_OUTPUT=$(aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
