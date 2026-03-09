@@ -182,14 +182,26 @@ jobs:
           IMAGE: ${{ env.IMAGE }}
         run: |
           PARAMS=$(printf '{"commands":["set -e","docker pull %s","docker stop luna-lunera 2>/dev/null || true","docker rm luna-lunera 2>/dev/null || true","docker run -d --name luna-lunera --restart unless-stopped -p 80:80 %s"]}' "$IMAGE" "$IMAGE")
-          COMMAND_ID=$(aws ssm send-command \
+          set +e
+          COMMAND_OUTPUT=$(aws ssm send-command \
             --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
             --parameters "$PARAMS" \
             --timeout-seconds 300 \
             --region ${{ env.AWS_REGION }} \
-            --query 'Command.CommandId' \
-            --output text)
+            --output json 2>&1)
+          SEND_EXIT=$?
+          if [ $SEND_EXIT -ne 0 ]; then
+            echo "::error::aws ssm send-command falló (exit $SEND_EXIT). Revisa permisos IAM (ssm:SendCommand) y que la instancia esté Online en SSM."
+            echo "$COMMAND_OUTPUT"
+            exit $SEND_EXIT
+          fi
+          COMMAND_ID=$(echo "$COMMAND_OUTPUT" | jq -r '.Command.CommandId')
+          if [ -z "$COMMAND_ID" ] || [ "$COMMAND_ID" = "null" ]; then
+            echo "::error::No se obtuvo CommandId de SSM."
+            echo "$COMMAND_OUTPUT"
+            exit 1
+          fi
           echo "command_id=$COMMAND_ID" >> $GITHUB_OUTPUT
 
       - name: Comprobar resultado del comando SSM
@@ -208,13 +220,19 @@ jobs:
               exit 0
             fi
             if [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Cancelled" ] || [ "$STATUS" = "TimedOut" ]; then
-              echo "Despliegue falló con estado: $STATUS"
+              echo "::error::Despliegue falló con estado: $STATUS"
+              echo "=== Salida estándar (stdout) en la instancia ==="
               aws ssm get-command-invocation \
                 --command-id "$COMMAND_ID" \
                 --instance-id "$INSTANCE_ID" \
                 --region ${{ env.AWS_REGION }} \
-                --query '[Status, StatusDetails, StandardErrorContent]' \
-                --output text
+                --query 'StandardOutputContent' --output text
+              echo "=== Errores (stderr) en la instancia ==="
+              aws ssm get-command-invocation \
+                --command-id "$COMMAND_ID" \
+                --instance-id "$INSTANCE_ID" \
+                --region ${{ env.AWS_REGION }} \
+                --query '[Status, StatusDetails, StandardErrorContent]' --output text
               exit 1
             fi
             echo "Esperando comando SSM... $STATUS ($i/60)"
